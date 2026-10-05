@@ -4,8 +4,8 @@ PROGRAM = invoker.dge
 #PLATFORM = RFW
 #PLATFORM = OD
 #PLATFORM = NPG
-PLATFORM = PC
-
+#PLATFORM = PC
+PLATFORM = OD-BETA
 # Compiler
 
 ifeq ($(PLATFORM), BITTBOY)
@@ -15,7 +15,7 @@ else ifeq ($(PLATFORM), RFW)
 else ifeq ($(PLATFORM), OD)
 	CC = /opt/gcw0-toolchain/usr/bin/mipsel-gcw0-linux-uclibc-gcc
 else ifeq ($(PLATFORM), OD-BETA)
-	CC = /home/bittboy/Downloads/gcw0-toolchain/usr/bin/mipsel-gcw0-linux-uclibc-gcc	
+	CC = /opt/gcw0-toolchain-beta/usr/bin/mipsel-gcw0-linux-uclibc-gcc
 else ifeq ($(PLATFORM), NPG)
 	CC = /opt/gcw0-toolchain/usr/bin/mipsel-gcw0-linux-uclibc-gcc	
 else

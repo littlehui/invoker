@@ -237,16 +237,23 @@ int main(int argc, char *argv[]) {
 		} else {
 			//it's an emulator
 			if (strstr(executable,".opk")) {
-				//it's an opk emulator
-				if (strcmp(fileToBeExecutedWithFullPath,"*")==0) {
-					ret=execlp("opkrun","invoker",executable,NULL);
-				} else {
+				char *params[64];
+				int n = 0;
+				int extra;
+				params[n++] = "invoker";
 #ifdef TARGET_RFW
-					ret=execlp("opkrun","invoker","-m","default.retrofw.desktop",executable,fileToBeExecutedWithFullPath,NULL);
-#else
-					ret=execlp("opkrun","invoker",executable,fileToBeExecutedWithFullPath,NULL);
+				params[n++] = "-m";
+				params[n++] = "default.retrofw.desktop";
 #endif
+				params[n++] = executable;
+				if (strcmp(fileToBeExecutedWithFullPath,"*")!=0) {
+					params[n++] = fileToBeExecutedWithFullPath;
 				}
+				for (extra = 4; extra < argc && n < 63; extra++) {
+					params[n++] = argv[extra];
+				}
+				params[n] = NULL;
+				ret = execvp("opkrun", params);
 			} else {
 				//non opk emulator with params
 				char localExec[100];
@@ -264,7 +271,14 @@ int main(int argc, char *argv[]) {
 				argsCount = cmd_param_split(executable,args,64);
 				strcat(localExec,args[0]);
 				args[argsCount]=fileToBeExecutedWithFullPath;
-				args[argsCount+1]=NULL;
+				{
+					int extra;
+					int dst = argsCount + 1;
+					for (extra = 4; extra < argc && dst < 63; extra++) {
+						args[dst++] = argv[extra];
+					}
+					args[dst] = NULL;
+				}
 				ret = execvp(localExec,args);
 			}
 		}
